@@ -91,23 +91,23 @@ def categorize_tweets(df, embeddings):
 
 def main():
     month = "september"
-    df = pd.read_excel(f"data/raw/raw_{month}.xlsx")
-    follower_df = pd.read_excel("data/followers.xlsx")
+    df = pd.read_excel(f"./data/raw/raw_{month}.xlsx")
+    follower_df = pd.read_excel("./data/followers.xlsx")
 
-    embedding_path = f"data/embeddings/{month}_2023_embeddings.pickle"
+    embedding_path = f"./data/embeddings/{month}_2023_embeddings.pickle"
     if Path(embedding_path).is_file():
         print("Loading embeddings...")
         embeddings = data_utils.load_embeddings(embedding_path)
     else:
         print("Embeddings not found. Generating embeddings...")
         embeddings = data_utils.get_embeddings(df, target="Tweet text")
-        data_utils.save_embeddings(embeddings, f"data/embeddings/{month}_2023_embeddings.pickle")
+        data_utils.save_embeddings(embeddings, f"./data/embeddings/{month}_2023_embeddings.pickle")
 
     df = map_followers(df, follower_df)
     df = derive_new_columns(df)
     df = categorize_tweets(df, embeddings)
 
-    df.to_csv(f"data/processed/{month}_2023_new.xlsx", index=False)
+    df.to_csv(f"./data/processed/{month}_2023_new.xlsx", index=False)
     print(f"Successfuly saved cleaned data.")
 
 main()

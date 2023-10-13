@@ -47,7 +47,7 @@ def plot_scatter(df, x, y):
     plt.show(block=True)
 
 def plot_regression(df, x, y):
-    sns.lmplot(data=df, x=x, y=y, scatter_kws={'alpha':0.25, 's':10}, ci=None, hue="tweet type", line_kws={'alpha':0})
+    sns.lmplot(data=df, x=x, y=y, scatter_kws={'alpha':0.25, 's':10}, ci=None, hue="tweet type", line_kws={'alpha':1})
     scatter =  plt.scatter(data=df, x=x, y=y, alpha=0)
     cursor = mplcursors.cursor(scatter, hover=True)
     @cursor.connect("add")
@@ -85,7 +85,7 @@ def ols(X, y):
 
     # If X is a single column, plot the residuals against X
     if X.shape[1] == 1:
-        sns.scatterplot(x=X, y=results.resid, alpha=0.5, s=10, ax=ax[1])
+        sns.scatterplot(x=np.array(X).flatten(), y=results.resid, alpha=0.5, s=10, ax=ax[1])
         ax[1].set_xlabel("x values")
         ax[1].set_ylabel("residuals")
         ax[1].set_title(f"Residuals vs x values")
@@ -129,21 +129,22 @@ def predict_log_impressions_with_embeddings(embeddings, model):
     predictions = model.predict(embeddings)
     return predictions
 
-months = ["may", "june", "july", "august", "september"]
-file_arr = [f"data/processed/{month}_2023.xlsx" for month in months]
+def main():
+    months = ["may", "june", "july", "august", "september"]
+    file_arr = [f"./data/processed/{month}_2023.xlsx" for month in months]
 
-df = load_data(file_arr, follower_threshold=None, duration_threshold=None, exclude_multitags=False, exclude_selected_accs=False)
-embedding_paths = [f"data/embeddings/{month}_2023_embeddings.pickle" for month in months]
-embeddings = data_utils.load_embeddings(embedding_paths)
+    df = load_data(file_arr, follower_threshold=None, duration_threshold=None, exclude_multitags=False, exclude_selected_accs=False)
+    embedding_paths = [f"./data/embeddings/{month}_2023_embeddings.pickle" for month in months]
+    embeddings = data_utils.load_embeddings(embedding_paths)
 
-# df, embeddings = data_utils.filter_df_and_embeddings(df, subset="Tweet", embeddings=embeddings)
-log_existing_followers = np.log(df["existing followers"].to_numpy())
-embeddings = np.concatenate((embeddings, log_existing_followers.reshape(-1, 1)), axis=1)
-ols(embeddings, df["log impressions"])
+    plot_histogram(df, target="log impressions")
+    plot_scatter(df, "log impressions", "user profile clicks ratio")
 
+    df, embeddings = data_utils.filter_df_and_embeddings(df, subset="Tweet", embeddings=embeddings)
+    plot_regression(df, "log existing followers", "log impressions")
+    ols(df[["log existing followers"]], df["log impressions"])
+    plot_tsne(df, embeddings, "user profile clicks ratio")
 
-# plot_histogram(df, target="unexplained")
-# plot_scatter(df, "log impressions", "user profile clicks ratio")
-# plot_regression(df, "log existing followers", "unexplained")
-# plot_tsne(df, embeddings, "user profile clicks ratio")
+if __name__ == "__main__":
+    main()
 
