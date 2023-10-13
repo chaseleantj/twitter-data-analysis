@@ -50,3 +50,11 @@ def load_embeddings(filenames):
     matrix = np.concatenate(tuple([load_embedding(filename) for filename in filenames]), axis=0)
     return matrix
 
+def filter_df_and_embeddings(df, subset, embeddings, column="tweet type"):
+    df = df.reset_index()
+    if subset:
+        indices = df[df[column] == subset].index.tolist()
+    filtered_df = df.iloc[indices] if subset else df
+    filtered_embeddings = embeddings[indices] if subset else embeddings
+    return filtered_df, filtered_embeddings
+
