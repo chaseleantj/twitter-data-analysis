@@ -5,3 +5,4 @@ data/embeddings/*
 !data/embeddings/.gitkeep
 misc/
 personal/
+README2.md

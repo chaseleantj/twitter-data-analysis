@@ -29,11 +29,13 @@ def load_data(file_arr, follower_threshold=None, duration_threshold=None, exclud
 
     return df
 
-def plot_histogram(df, target, keys=["Tweet", "Reply", "Thread content"]):
+def plot_histogram(df, target, keys=["Tweet", "Reply", "Thread content", "Quote", "Community"]):
+    plt.title("Histogram of log impressions")
     for key in keys:
         data = df[df["tweet type"] == key][target]
-        width = 0.1
-        plt.hist(data, bins=np.arange(min(data), max(data) + width, width), alpha=0.5, edgecolor="black")
+        width = 0.25
+        plt.hist(data, bins=np.arange(min(data), max(data) + width, width), alpha=0.5, label=key)
+    plt.legend()
     plt.show(block=True)
 
 def plot_scatter(df, x, y):
@@ -46,8 +48,8 @@ def plot_scatter(df, x, y):
         sel.annotation.arrow_patch.set(arrowstyle="simple", fc="white", alpha=1)
     plt.show(block=True)
 
-def plot_regression(df, x, y):
-    sns.lmplot(data=df, x=x, y=y, scatter_kws={'alpha':0.25, 's':10}, ci=None, hue="tweet type", line_kws={'alpha':1})
+def plot_regression(df, x, y, show_line=True):
+    sns.lmplot(data=df, x=x, y=y, scatter_kws={'alpha':0.25, 's':10}, ci=None, hue="tweet type", line_kws={'alpha':1 if show_line else 0})
     scatter =  plt.scatter(data=df, x=x, y=y, alpha=0)
     cursor = mplcursors.cursor(scatter, hover=True)
     @cursor.connect("add")
@@ -134,16 +136,25 @@ def main():
     file_arr = [f"./data/processed/{month}_2023.xlsx" for month in months]
 
     df = load_data(file_arr, follower_threshold=None, duration_threshold=None, exclude_multitags=False, exclude_selected_accs=False)
-    embedding_paths = [f"./data/embeddings/{month}_2023_embeddings.pickle" for month in months]
-    embeddings = data_utils.load_embeddings(embedding_paths)
+    # embedding_paths = [f"./data/embeddings/{month}_2023_embeddings.pickle" for month in months]
+    # embeddings = data_utils.load_embeddings(embedding_paths)
 
-    plot_histogram(df, target="log impressions")
-    plot_scatter(df, "log impressions", "user profile clicks ratio")
+    # Correlation between log impressions and log likes, log retweets, log replies
+    print(df[["log impressions", "like ratio", "retweet ratio", "reply ratio", "user profile clicks ratio"]].corr())
 
-    df, embeddings = data_utils.filter_df_and_embeddings(df, subset="Tweet", embeddings=embeddings)
-    plot_regression(df, "log existing followers", "log impressions")
-    ols(df[["log existing followers"]], df["log impressions"])
-    plot_tsne(df, embeddings, "user profile clicks ratio")
+    # min, max, iqr of log impressions
+    # print(df[df["tweet type"] == "Tweet"]["impressions"].describe())
+
+    # plot_histogram(df, target="log impressions")
+    # plot_scatter(df, "log impressions", "user profile clicks ratio")
+
+    # df, embeddings = data_utils.filter_df_and_embeddings(df, subset="Tweet", embeddings=embeddings)
+
+    # plot_regression(df[df["tweet type"].isin(["Tweet", "Reply"])], "log existing followers", "log impressions", show_line=False)
+
+    # df = df[df["tweet type"] == "Reply"]
+    # ols(df[["log existing followers"]], df["log impressions"])
+    # plot_tsne(df, embeddings, "user profile clicks ratio")
 
 if __name__ == "__main__":
     main()

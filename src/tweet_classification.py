@@ -159,18 +159,12 @@ class Tweet_Classifier:
 
 def build_model():
 
-    # Load the data
-    df = data_utils.join_data([
-        "data/may_2023.csv",
-        "data/june_2023.csv",
-        "data/july_2023.csv"
-    ])
+    months = ["may", "june", "july", "august", "september"]
+    file_arr = [f"./data/processed/{month}_2023.xlsx" for month in months]
 
-    embeddings = data_utils.load_embeddings([
-        "data/embeddings/may_2023_embeddings.pickle",
-        "data/embeddings/june_2023_embeddings.pickle",
-        "data/embeddings/july_2023_embeddings.pickle"
-    ])
+    df = data_utils.join_data(file_arr)
+    embedding_paths = [f"./data/embeddings/{month}_2023_embeddings.pickle" for month in months]
+    embeddings = data_utils.load_embeddings(embedding_paths)
 
     df = df.reset_index()
     df = data_utils.df_add_2darray(df, embeddings, "embedding")
@@ -192,8 +186,16 @@ def build_model():
         keras.layers.Normalization()
     )
 
-    classifier.fit(train_features, train_labels)
-    classifier.print_wrong_predictions(val_df, df, val_features, val_labels, one_hot=is_one_hot)
+    print(train_features[:10], train_labels[:10])
+    # classifier.fit(train_features, train_labels)
+    # classifier.print_wrong_predictions(val_df, df, val_features, val_labels, one_hot=is_one_hot)
+
+build_model()
+
+
+
+
+
 
 
 
