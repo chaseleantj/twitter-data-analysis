@@ -136,11 +136,8 @@ def main():
     file_arr = [f"./data/processed/{month}_2023.xlsx" for month in months]
 
     df = load_data(file_arr, follower_threshold=None, duration_threshold=None, exclude_multitags=False, exclude_selected_accs=False)
-    # embedding_paths = [f"./data/embeddings/{month}_2023_embeddings.pickle" for month in months]
-    # embeddings = data_utils.load_embeddings(embedding_paths)
-
-    # Correlation between log impressions and log likes, log retweets, log replies
-    print(df[["log impressions", "like ratio", "retweet ratio", "reply ratio", "user profile clicks ratio"]].corr())
+    embedding_paths = [f"./data/embeddings/{month}_2023_embeddings.pickle" for month in months]
+    embeddings = data_utils.load_embeddings(embedding_paths)
 
     # min, max, iqr of log impressions
     # print(df[df["tweet type"] == "Tweet"]["impressions"].describe())
@@ -148,13 +145,13 @@ def main():
     # plot_histogram(df, target="log impressions")
     # plot_scatter(df, "log impressions", "user profile clicks ratio")
 
-    # df, embeddings = data_utils.filter_df_and_embeddings(df, subset="Tweet", embeddings=embeddings)
+    df, embeddings = data_utils.filter_df_and_embeddings(df, subset="Tweet", embeddings=embeddings)
 
     # plot_regression(df[df["tweet type"].isin(["Tweet", "Reply"])], "log existing followers", "log impressions", show_line=False)
 
-    # df = df[df["tweet type"] == "Reply"]
+    # df = df[df["tweet type"] == "Tweet"]
     # ols(df[["log existing followers"]], df["log impressions"])
-    # plot_tsne(df, embeddings, "user profile clicks ratio")
+    plot_tsne(df, embeddings, "user profile clicks ratio")
 
 if __name__ == "__main__":
     main()

@@ -64,7 +64,6 @@ df = data_utils.join_data(file_arr)
 embedding_paths = [f"data/embeddings/{month}_2023_embeddings.pickle" for month in months]
 embeddings = data_utils.load_embeddings(embedding_paths)
 
-df = df.reset_index()
 df = data_utils.df_add_2darray(df, embeddings, "embedding")
 additional_features = []
 target = ["log impressions"]
@@ -78,9 +77,6 @@ test_features = get_all_features(test_df, embedding_vector=True, additional_feat
 train_labels = train_df[target].to_numpy()
 val_labels = val_df[target].to_numpy()
 test_labels = test_df[target].to_numpy()
-
-print(train_features.shape)
-print(train_labels.shape)
 
 # Normalize the data
 normalizer = keras.layers.Normalization()
@@ -107,7 +103,7 @@ model.compile(
 # Train the model
 history = model.fit(
     train_features, train_labels,
-    epochs=200,
+    epochs=150,
     batch_size=32,
     verbose=1,
     validation_data=(val_features, val_labels)
@@ -122,6 +118,8 @@ val_predictions = model.predict(val_features)
 test_predictions = model.predict(test_features)
 print("R^2 of training set: ", get_r2(val_labels, val_predictions))
 print("R^2 of testing set: ", get_r2(test_labels, test_predictions))
+print("MSE of training set: ", np.mean((val_labels - val_predictions)**2))
+print("MSE of testing set: ", np.mean((test_labels - test_predictions)**2))
 
 # Plot the predictions vs. the actual values
 plt.scatter(val_predictions, val_labels)
@@ -130,6 +128,6 @@ plt.xlabel("Predicted log impressions")
 plt.ylabel("Actual log impressions")
 plt.show()
 
-model.save("models/impressions_predictor_september_150")
-print("Model saved.")
+# model.save("models/impressions_predictor_september_200")
+# print("Model saved.")
 
