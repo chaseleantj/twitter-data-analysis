@@ -49,7 +49,7 @@ def plot_scatter(df, x, y):
     plt.show(block=True)
 
 def plot_regression(df, x, y, show_line=True):
-    sns.lmplot(data=df, x=x, y=y, scatter_kws={'alpha':0.25, 's':10}, ci=None, hue="tweet type", line_kws={'alpha':1 if show_line else 0})
+    sns.lmplot(data=df, x=x, y=y, scatter_kws={'alpha':0.25, 's':10}, hue="tweet type", line_kws={'alpha':1 if show_line else 0})
     scatter =  plt.scatter(data=df, x=x, y=y, alpha=0)
     cursor = mplcursors.cursor(scatter, hover=True)
     @cursor.connect("add")
@@ -135,23 +135,19 @@ def main():
     months = ["may", "june", "july", "august", "september"]
     file_arr = [f"./data/processed/{month}_2023.xlsx" for month in months]
 
-    df = load_data(file_arr, follower_threshold=None, duration_threshold=None, exclude_multitags=False, exclude_selected_accs=False)
-    embedding_paths = [f"./data/embeddings/{month}_2023_embeddings.pickle" for month in months]
-    embeddings = data_utils.load_embeddings(embedding_paths)
-
-    # min, max, iqr of log impressions
-    # print(df[df["tweet type"] == "Tweet"]["impressions"].describe())
+    df = load_data(file_arr, follower_threshold=100, duration_threshold=None, exclude_multitags=False, exclude_selected_accs=False)
+    # embedding_paths = [f"./data/embeddings/{month}_2023_embeddings.pickle" for month in months]
+    # embeddings = data_utils.load_embeddings(embedding_paths)
 
     # plot_histogram(df, target="log impressions")
     # plot_scatter(df, "log impressions", "user profile clicks ratio")
 
-    df, embeddings = data_utils.filter_df_and_embeddings(df, subset="Tweet", embeddings=embeddings)
+    plot_regression(df[df["tweet type"].isin(["Tweet", "Reply"])], "log existing followers", "log impressions", show_line=True)
+    # plot_regression(df[df["tweet type"] == "Tweet"], "log existing followers", "log impressions", show_line=True)
 
-    # plot_regression(df[df["tweet type"].isin(["Tweet", "Reply"])], "log existing followers", "log impressions", show_line=False)
-
-    # df = df[df["tweet type"] == "Tweet"]
-    # ols(df[["log existing followers"]], df["log impressions"])
-    plot_tsne(df, embeddings, "user profile clicks ratio")
+    df = df[df["tweet type"] == "Tweet"]
+    ols(df[["log existing followers"]], df["log impressions"])
+    # plot_tsne(df, embeddings, "user profile clicks ratio")
 
 if __name__ == "__main__":
     main()
