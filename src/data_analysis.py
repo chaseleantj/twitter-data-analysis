@@ -145,7 +145,6 @@ def main():
     # plot_scatter(df, "log impressions", "user profile clicks ratio")
 
     plot_regression(df[df["tweet type"].isin(["Tweet", "Reply"])], "log existing followers", "log impressions", show_line=True)
-    # plot_regression(df[df["tweet type"] == "Tweet"], "log existing followers", "log impressions", show_line=True)
 
     df = df[df["tweet type"] == "Tweet"]
     ols(df[["log existing followers"]], df["log impressions"])
