@@ -73,6 +73,8 @@ def ols(X, y):
 
     # Plot a scatterplot of the predicted values against the actual values
     sns.scatterplot(x=results.predict(), y=y, alpha=0.5, s=10)
+    # Plot the line y=x
+    plt.plot(np.arange(min(y), max(y)), np.arange(min(y), max(y)), color="red")
     plt.xlabel("predicted values")
     plt.ylabel("actual values")
     plt.title("Predicted values vs actual values")
@@ -139,7 +141,7 @@ def main():
     # embedding_paths = [f"./data/embeddings/{month}_2023_embeddings.pickle" for month in months]
     # embeddings = data_utils.load_embeddings(embedding_paths)
 
-    # plot_histogram(df, target="log impressions")
+    plot_histogram(df, target="log impressions", keys=["Tweet", "Reply"])
     # plot_scatter(df, "log impressions", "user profile clicks ratio")
 
     plot_regression(df[df["tweet type"].isin(["Tweet", "Reply"])], "log existing followers", "log impressions", show_line=True)
