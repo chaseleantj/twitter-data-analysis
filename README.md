@@ -22,7 +22,7 @@ The 3974 posts are grouped into 5 categories:
 <li>Tweets featuring tutorials received the highest amount of engagement and more than 5x the number of views. People love tutorials.</li>
 <li>Follower milestone celebration tweets had a 10x higher user profile click ratio to impressions vs regular tweets - probably due to the emotional nature of the post. However, they usually have 5x lower impressions.</li>
 <li>By simple linear regression with log-log axes, a 1% increase in my follower count increases the mean view count of my tweets by 0.55%, with R-squared=0.26, F(1, 217)=77.54, p=4.19 * 10^-16 and MSE=2.13.</li>
-<a href="figures/Figure_4(2).png" width="500px"></a>
+<img src="figures/Figure_4(2).png" width="500px">
 <li>A 1% increase in follower count also increases the mean view count of a reply by 0.39%, with R-squared=0.16, F(1, 2962)=541.6, p=3.64 * 10^-110.</li>
 <li>The relationship between view count and follower count is weak. The content of the post is more important than the follower count of the person posting it. This means that larger accounts do indeed have an advantage, but smaller accounts with good content can have viral posts too.</li>
 <li>To support this claim, a deep neural network was trained to predict log views based on a post's text content alone (coverted to a 1536 dimensional-embedding via OpenAI's `text-embedding-ada-002`). It achieved R-squared=0.59, MSE=1.86 on the test dataset, which shows that the content of a post is more closely related to its view count, rather than the follower count of the person who posted it.</li>
