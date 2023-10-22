@@ -75,20 +75,6 @@ def categorize_tweets(df, embeddings):
     print("Successfully categorized tweets.")
     return df
 
-
-# def categorize_tweets(df):
-#     df['tweet type'] = "Thread content"
-#     df.loc[df['Tweet text'].str.startswith("@") == True, 'tweet type'] = "Reply"
-#     idx = df[df['tweet type'] == "Thread content"].groupby(['time'])['impressions'].idxmax()
-#     df.loc[idx, 'tweet type'] = "Tweet"
-
-#     # Determine the person replied to
-#     df['reply to'] = 'N/A'
-#     replies = df[df['tweet type'] == "Reply"]['Tweet text'].str.split().str[0]
-#     df.loc[df['tweet type'] == "Reply", 'reply to'] = replies
-    
-#     return df
-
 def main():
     month = "september"
     df = pd.read_excel(f"./data/raw/raw_{month}.xlsx")

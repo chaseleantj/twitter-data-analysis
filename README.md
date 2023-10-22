@@ -46,11 +46,12 @@ Below, I'll refer to "posts" to mean all 5 categories, and "tweets", "replies" e
 <li>By simple linear regression with log-log axes, a 1% increase in my follower count increases the mean view count of my tweets by 0.55%, with R-squared=0.26, F(1, 217)=77.54, p=4.19 * 10^-16 and MSE=2.13.</li>
 <li>A 1% increase in follower count also increases the mean view count of a reply by 0.39%, with R-squared=0.16, F(1, 2962)=541.6, p=3.64 * 10^-110.</li>
 
-<li>The relationship between view count and follower count is weak. The content of the post is more important than the follower count of the person posting it. This means that larger accounts do indeed have an advantage, but smaller accounts with good content can have viral posts too.</li>
+<li>The relationship between view count and follower count is weak. From experience, the content of the post is more important than the follower count of the person posting it.</li>
 
-<li>To test this claim, a deep neural network was trained to predict log views based on a post's text content alone (coverted to a 1536 dimensional-embedding via OpenAI's `text-embedding-ada-002`). It achieved R-squared=0.59, MSE=1.86 on the test dataset, which shows that the content of a post is more closely related to its view count, rather than the follower count of the person who posted it.</li>
+<li>To test this claim, a deep neural network was trained to predict log views based on a post's text content alone (coverted to a 1536 dimensional-embedding via OpenAI's `text-embedding-ada-002`). It achieved R-squared=0.59, MSE=1.86 on the test dataset</li> 
 
-<li>Admittedly, the neural network might not be a good approach to perform such a fit - as the dataset is too small relative to the number of features and parameters. An alternative technique to predict the number of impressions with greater accuracy is to first reduce the number of features in the embedding, and use multiple linear regression on both the dimensionally reduced embedding and the follower count.
+<li>This provides evidence to support the fact that the view count of a post is more closely related to its content, rather than the follower count of the person posting it. Larger accounts do indeed have an advantage, but smaller accounts with good content can have viral posts too.</li>
+
 </ul>
 
 ### Takeaways
@@ -64,4 +65,4 @@ Ultimately, statistical methods are useful to obtain meaningful information from
 
 This analysis was interesting and informative. But it is not a substitute for experience and good judgement of relevant trends when making Twitter posts. 
 
-It does not take into account the fluctuation in user interests over time, as well as changes to Twitter's algorithm - there have been at least 3 major ones over 5 months. Nor does it one's skill and understanding of Twitter's platform and audience.
+During the analysis, my assumptions did not take into account the fluctuation in user interests over time, as well as changes to Twitter's algorithm - there have been at least 3 major ones over 5 months. Nor does it one's skill and understanding of Twitter's platform and audience.

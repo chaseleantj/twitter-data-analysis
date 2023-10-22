@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
 
-followers = pd.read_csv("data/followers.xlsx")
+followers = pd.read_excel("data/followers.xlsx")
 
 # Create a new column, which is the difference between the current date and the first date
 followers["date"] = pd.to_datetime(followers["date"])
